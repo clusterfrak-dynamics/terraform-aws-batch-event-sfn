@@ -60,8 +60,8 @@ resource "aws_iam_policy" "batch_sfn_state_machine" {
 }
 
 resource "aws_iam_role_policy_attachment" "batch_sfn_state_machine" {
-  role       = aws_iam_role.batch_sfn_state_machine[0].name
-  policy_arn = aws_iam_policy.batch_sfn_state_machine[0].arn
+  role       = aws_iam_role.batch_sfn_state_machine.name
+  policy_arn = aws_iam_policy.batch_sfn_state_machine.arn
 }
 
 resource "aws_sfn_state_machine" "batch_sfn_state_machine" {
@@ -80,9 +80,9 @@ resource "aws_sfn_state_machine" "batch_sfn_state_machine" {
       "Parameters": {
         "JobName": "${var.job_name}",
         "JobQueue": "${var.job_queue}",
-        "JobDefinition": "${aws_batch_job_definition.this.arn}-${aws_batch_job_definition.this.revision}"
+        "JobDefinition": "${aws_batch_job_definition.this.arn}"
       },
-      "Next": "Notify Success",
+      "End": true,
       "Catch": [
           {
             "ErrorEquals": [ "States.ALL" ],
@@ -90,20 +90,11 @@ resource "aws_sfn_state_machine" "batch_sfn_state_machine" {
           }
       ]
     },
-    "Notify Success": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::sns:publish",
-      "Parameters": {
-        "Message": "${var.sfn_success_message}",
-        "TopicArn": "${var.create_sns_topic ? join("", aws_sns_topic.batch_cfn_sns_topic.*.arn) : var.sns_topic_arn}"
-      },
-      "End": true
-    },
     "Notify Failure": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "Message": "${var.sfn_success_message}",
+        "Message": "${var.sfn_failure_message}",
         "TopicArn": "${var.create_sns_topic ? join("", aws_sns_topic.batch_cfn_sns_topic.*.arn) : var.sns_topic_arn}"
       },
       "End": true
