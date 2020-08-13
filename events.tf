@@ -40,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "ecs_events" {
 }
 
 resource "aws_cloudwatch_event_rule" "default" {
-  name_prefix         = var.name
+  name                = var.name
   event_pattern       = var.event_pattern
   schedule_expression = var.schedule_expression
 }

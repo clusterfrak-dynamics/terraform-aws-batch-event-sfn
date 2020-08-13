@@ -3,6 +3,6 @@ locals {
 }
 
 resource "aws_sns_topic" "batch_cfn_sns_topic" {
-  count       = local.enabled_sns_topic
-  name_prefix = var.name
+  count = local.enabled_sns_topic
+  name  = var.name
 }
