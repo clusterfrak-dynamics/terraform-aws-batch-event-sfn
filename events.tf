@@ -43,6 +43,7 @@ resource "aws_cloudwatch_event_rule" "default" {
   name                = var.name
   event_pattern       = var.event_pattern
   schedule_expression = var.schedule_expression
+  tags                = var.tags
 }
 
 resource "aws_cloudwatch_event_target" "default" {

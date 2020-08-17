@@ -52,6 +52,7 @@ data "aws_iam_policy_document" "batch_sfn_state_machine_policy" {
 resource "aws_iam_role" "batch_sfn_state_machine" {
   name               = "${var.name}-sfn"
   assume_role_policy = data.aws_iam_policy_document.batch_sfn_state_machine_assume_role_policy.json
+  tags     = var.tags
 }
 
 resource "aws_iam_policy" "batch_sfn_state_machine" {
@@ -67,6 +68,7 @@ resource "aws_iam_role_policy_attachment" "batch_sfn_state_machine" {
 resource "aws_sfn_state_machine" "batch_sfn_state_machine" {
   name     = var.name
   role_arn = aws_iam_role.batch_sfn_state_machine.arn
+  tags     = var.tags
 
   definition = <<EOF
 {
